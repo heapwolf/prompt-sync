@@ -1,0 +1,27 @@
+{
+  "name": "prompt-sync",
+  "version": "1.0.0",
+  "description": "a synchronous prompt for node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hij1nx/prompt-sync.git"
+  },
+  "keywords": [
+    "prompt",
+    "sync",
+    "blocking",
+    "readline",
+    "input",
+    "getline"
+  ],
+  "author": "hij1nx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hij1nx/prompt-sync/issues"
+  },
+  "homepage": "https://github.com/hij1nx/prompt-sync"
+}
