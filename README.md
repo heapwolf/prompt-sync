@@ -1,7 +1,7 @@
 # SYNOPSIS
 A sync prompt for node. very simple. no C++ bindings and no bash scripts.
 
-# USAGE
+# BASIC MODE
 ```js
 
 //
@@ -20,3 +20,10 @@ var n = prompt();
 process.stdout.write(n + ' is ' + n + 'times too many');
 ```
 
+# SECRET MODE
+
+```js
+process.stdin.setRawMode(true)
+process.stdout.write('password>')
+var password = prompt('\u000D')
+```
