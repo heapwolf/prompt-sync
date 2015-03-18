@@ -1,9 +1,12 @@
 var prompt = require('./index');
 
-process.stdout.write('enter a value for a: ');
-var a = prompt();
-console.log(a);
-process.stdout.write('enter a value for b: ');
-var b = prompt();
-console.log(b);
+
+console.log('enter name');
+var name = prompt();
+console.log('enter password 1 with * as echo character');
+var pw = prompt({hidden:true});
+console.log('enter password 2 with no echo character');
+var pwb = prompt({hidden:true, echo: ''});  
+console.log('Name: %s\nPassword 1: %s\nPassword 2: ', name, pw, pwb);
+
 
