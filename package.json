@@ -1,6 +1,6 @@
 {
   "name": "prompt-sync",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "a synchronous prompt for node.js",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hij1nx/prompt-sync.git"
+    "url": "https://github.com/yegodz/prompt-sync.git"
   },
   "keywords": [
     "prompt",
@@ -16,12 +16,10 @@
     "blocking",
     "readline",
     "input",
-    "getline"
+    "getline",
+    "repl",
+    "history"
   ],
-  "author": "hij1nx",
+  "author": "yegodz",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/hij1nx/prompt-sync/issues"
-  },
-  "homepage": "https://github.com/hij1nx/prompt-sync"
 }
