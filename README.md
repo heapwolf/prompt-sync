@@ -46,14 +46,27 @@ History is not set when using hidden mode.
 # EXAMPLES
 
 ```js
-prompt = require('prompt-sync');
-prompt.init(); // start history. Use cursor up/down for history
-console.log('Enter some text:');
-var sometext = prompt.prompt({tabComplete: myCompleter});
-console.log('Enter password:');
-var password1 = prompt({hidden: true}); // '*' is echoed 
-var password2 = prompt({hidden:true, echo: ''}); // there is no echo 
-var password3 = prompt({hidden:true, echo: '?'}); // '?' is echoed 
+    var prompt = require('./index') 
+    var commands = ['hello1234', 'he', 'hello', 'hello12', 'hello123456'];
+    function tabComplete(str) {
+      var i;
+      var ret = [];
+      for (i=0; i< commands.length; i++) {
+        if (commands[i].indexOf(str) == 0)
+          ret.push(commands[i]);
+      }
+      return ret;
+    };
+  
+    prompt.init();
+    console.log('enter name');
+    var name = prompt.prompt({tabComplete: tabComplete});
+    console.log('enter echo * password');
+    var pw = prompt.prompt({hidden:true});
+    console.log('enter no echo password');
+    var pwb = prompt.prompt({hidden:true, echo: ''});  
+    console.log('Name: %s, Password *: %s, Password no echo: ', name, pw, pwb);
+    prompt.save();
 ```
 ####Note
 a `^C` may be pressed during the input process to abort the text entry and return a null string
