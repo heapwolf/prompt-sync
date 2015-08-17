@@ -10,10 +10,11 @@ var HIST = [];
 /**
  * prompt -- sync function for reading user input from stdin
  * @param   {Object} option {
- *                        hidden: If true, user input will not be echoed,
- *                        echo: set to a character to be echoed, default is '*'. Use '' for no echo
- *                          tabComplete: {StringArray} function({String}) 
- *                        }
+ *   hidden: If true, user input will not be echoed,
+ *   echo: set to a character to be echoed, default is '*'. Use '' for no echo
+ *   tabComplete: {StringArray} function({String}) 
+ *   value: {String} initial value for the prompt
+ * }
  * @returns {string} Returns the string input or null if user terminates with a ^C
  */
 
@@ -22,10 +23,11 @@ function prompt(option) {
   var term = 13; // carriage return
   var hidden = false;
   var histindex = HIST.length;
-  var insert=0, savedinsert=0, res, i, savedstr;
+  var insert = 0, savedinsert = 0, res, i, savedstr;
+
   option = option || {};
   option.tabComplete = option.tabComplete || function(){return []} ;
-  
+
   if (option && option.hidden) {
     hidden = true;
     if (!option.hasOwnProperty('echo'))
@@ -38,6 +40,12 @@ function prompt(option) {
   var str = '', char, read;
   
   savedstr = '';
+
+  if (option.value) {
+    insert = option.value.length;
+    str = option.value;
+    process.stdout.write(option.value);
+  }
 
   while (true) {
     read = fs.readSync(fd, buf, 0, 3);
@@ -125,7 +133,7 @@ function prompt(option) {
     }
     
     if (char == 127) { //backspace
-      //if (hidden) continue;
+      if (!insert) continue;
       str = str.slice(0, insert-1) + str.slice(insert);
       insert--;
     } else {

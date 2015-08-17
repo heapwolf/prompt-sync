@@ -38,6 +38,8 @@ var n = prompt()
 a string as an argument an returns an array of strings that are possible matches for completion. An empty array 
 is returned if there are no matches.
 
+`value`: The initial value for the prompt.
+
 # LINE EDITING
 Line editing is enabled in the non-hidden mode. (use up/down arrows for history and backspace and left/right arrows for editing)
 
