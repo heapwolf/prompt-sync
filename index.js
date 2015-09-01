@@ -47,6 +47,9 @@ function prompt(option) {
     process.stdout.write(option.value);
   }
 
+  var cycle = 0;
+  var prevComplete;
+
   while (true) {
     read = fs.readSync(fd, buf, 0, 3);
     //process.stdout.write('read '+ read + ' '+ buf[0]);
@@ -100,10 +103,10 @@ function prompt(option) {
       process.stdin.setRawMode(false);
       return null;
     }
-    
+
     // catch the terminating character
     if (char == term) {
-      if (!hidden)
+      if (!hidden && str.length)
         HIST.push(str);
       fs.closeSync(fd);
       break;
@@ -112,24 +115,26 @@ function prompt(option) {
     // catch a TAB and implement tabcomplete
     if (char == 9) { // TAB
       res = option.tabComplete(str);
+
+      if (str == res[0]) {
+        res = option.tabComplete('');
+      }
+      else {
+        prevComplete = res.length;
+      }
+
       if (res.length == 0) {
         process.stdout.write("\07");
         continue;
       }
-      str = _longetsCommonPrefix(res);
-      insert = str.length;
-      
-      if (res.length == 1) {
-        process.stdout.write("\033[2K\033[0G" +  str);   
-        continue;
+
+      var item = res[cycle++] || res[cycle = 0, cycle++]
+
+      if (item) {
+        process.stdout.write("\r\033[K" + item);
+        str = item;
+        insert = item.length;
       }
-      // res.length > 1
-      process.stdout.write("\033[2K\033[0G-- ");
-      for (i = 0; i < res.length; i++) {
-        process.stdout.write('[ ' + res[i] + ' ] ');
-      }
-      process.stdout.write('\n');
-      process.stdout.write(str);
     }
     
     if (char == 127) { //backspace
@@ -176,27 +181,6 @@ function init(history_file, history_max) {
 
 function save(){
     fs.writeFileSync(HISTORY_FILE, HIST.join('\n') + '\n');
-}
-
-function _longetsCommonPrefix(arr) {
-  var i, j;
-  var prefix = ''; 
-  function prematch(i){
-    for (j=0; j < arr.length; j++) {
-      if (i > arr[j].length-1)
-        return false;
-      if (arr[0][i] != arr[j][i])
-        return false;
-    }
-    return true;
-  }
-  for (i=0; i< arr[0].length; i++) {
-    if (prematch(i))
-      prefix += arr[0][i];
-    else 
-      break;
-  }
-  return prefix;
 }
 
 module.exports = {
