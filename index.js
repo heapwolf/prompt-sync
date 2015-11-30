@@ -14,6 +14,7 @@ var HIST = [];
  *   echo: set to a character to be echoed, default is '*'. Use '' for no echo
  *   tabComplete: {StringArray} function({String}) 
  *   value: {String} initial value for the prompt
+ *   ask: {String} opening question/statement to prompt for
  * }
  * @returns {string} Returns the string input or null if user terminates with a ^C
  */
@@ -41,8 +42,13 @@ function prompt(option) {
   
   savedstr = '';
 
+  if (option.ask) {
+    insert = option.ask.length;
+    process.stdout.write(option.ask);
+  }
+
   if (option.value) {
-    insert = option.value.length;
+    insert += option.value.length;
     str = option.value;
     process.stdout.write(option.value);
   }
@@ -154,7 +160,12 @@ function prompt(option) {
       if (insert == str.length) {
         process.stdout.write("\033[2K\033[0G"+ str);
       } else {
-        process.stdout.write("\033[2K\033[0G"+ str + "\033[" + (str.length-insert) +"D" );
+        if (option.ask) {
+          process.stdout.write("\033[2K\033[0G"+ option.ask + str);
+        } else {
+          process.stdout.write("\033[2K\033[0G"+ str + "\033[" + (str.length-insert) +"D" );  
+        }
+        
       }
     }    
   }

@@ -40,6 +40,8 @@ is returned if there are no matches.
 
 `value`: The initial value for the prompt.
 
+`ask`: The question being asked of the user, will be output to terminal
+
 # LINE EDITING
 Line editing is enabled in the non-hidden mode. (use up/down arrows for history and backspace and left/right arrows for editing)
 
