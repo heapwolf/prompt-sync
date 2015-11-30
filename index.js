@@ -35,7 +35,8 @@ function prompt(option) {
   }
 
   var fd = fs.openSync('/dev/stdin', 'rs');
-  process.stdin.setRawMode(true);
+  var wasRaw = process.stdin.isRaw;
+  if (!wasRaw) { process.stdin.setRawMode(true); }
   var buf = new Buffer(3);
   var str = '', char, read;
   
@@ -100,7 +101,7 @@ function prompt(option) {
     if (char == 3){ 
       process.stdout.write('^C\n');
       fs.closeSync(fd);
-      process.stdin.setRawMode(false);
+      process.stdin.setRawMode(wasRaw);
       return null;
     }
 
@@ -161,7 +162,7 @@ function prompt(option) {
   
   process.stdout.write('\n')
 
-  process.stdin.setRawMode(false);
+  process.stdin.setRawMode(wasRaw);
   
   return str;
 };
