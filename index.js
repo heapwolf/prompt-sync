@@ -34,7 +34,10 @@ function prompt(option) {
       option.echo = '*';
   }
 
-  var fd = fs.openSync('/dev/stdin', 'rs');
+  var fd = process.platform !== 'win32' && +process.version.substr(3) < 12 ? 
+    fs.openSync('/dev/tty', 'rs') : 
+    process.stdin.fd;
+    
   process.stdin.setRawMode(true);
   var buf = new Buffer(3);
   var str = '', char, read;
