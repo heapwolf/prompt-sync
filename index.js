@@ -14,8 +14,10 @@ var HIST = [];
  *   echo: set to a character to be echoed, default is '*'. Use '' for no echo
  *   tabComplete: {StringArray} function({String}) 
  *   value: {String} initial value for the prompt
+ *   sigint: {Boolean} exit on ^C
  * }
- * @returns {string} Returns the string input or null if user terminates with a ^C
+ * @returns {string} Returns the string input or (if sigint === false) 
+ *                   null if user terminates with a ^C 
  */
 
 function prompt(option) {
@@ -103,6 +105,8 @@ function prompt(option) {
     if (char == 3){ 
       process.stdout.write('^C\n');
       fs.closeSync(fd);
+      if (option.sigint)
+        process.exit(130);
       process.stdin.setRawMode(false);
       return null;
     }
