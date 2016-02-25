@@ -1,6 +1,4 @@
-// forked from: 
-// https://github.com/hij1nx/prompt-sync
-
+'use strict'
 
 var fs = require('fs');
 var HISTORY_MAX = 100;
@@ -70,7 +68,7 @@ function prompt(option) {
             }
             str = HIST[--histindex];
             insert = str.length;
-            process.stdout.write("\033[2K\033[0G" +  str);
+            process.stdout.write("\u001b[2K\u001b[0G" +  str);
             break;
           case '\u001b[B':  //down arrow
             if (hidden) break;
@@ -83,17 +81,17 @@ function prompt(option) {
               str = HIST[++histindex];
               insert = str.length;
             }
-            process.stdout.write("\033[2K\033[0G"+ str + "\033["+(insert+1)+"G");
+            process.stdout.write("\u001b[2K\u001b[0G"+ str + "\u001b["+(insert+1)+"G");
             break;
           case '\u001b[D': //left arrow
             if (hidden) break;
             insert = (--insert < 0) ? 0 : insert;
-            process.stdout.write("\033[1D" +  '');
+            process.stdout.write("\u001b[1D" +  '');
             break;
           case '\u001b[C': //right arrow
             if (hidden) break;
             insert = (++insert > str.length) ? str.length : insert;
-            process.stdout.write("\033[" + (insert+1) + "G");
+            process.stdout.write("\u001b[" + (insert+1) + "G");
             break;
       }
       continue; // any other 3 character sequence is ignored
@@ -132,14 +130,14 @@ function prompt(option) {
       }
 
       if (res.length == 0) {
-        process.stdout.write("\07");
+        process.stdout.write("\t");
         continue;
       }
 
       var item = res[cycle++] || res[cycle = 0, cycle++]
 
       if (item) {
-        process.stdout.write("\r\033[K" + item);
+        process.stdout.write("\r\u001b[K" + item);
         str = item;
         insert = item.length;
       }
@@ -157,12 +155,12 @@ function prompt(option) {
     };
     
     if (hidden) {
-        process.stdout.write("\033[2K\033[0G" +  Array(str.length+1).join(option.echo));
+        process.stdout.write("\u001b[2K\u001b[0G" +  Array(str.length+1).join(option.echo));
     } else {
       if (insert == str.length) {
-        process.stdout.write("\033[2K\033[0G"+ str);
+        process.stdout.write("\u001b[2K\u001b[0G"+ str);
       } else {
-        process.stdout.write("\033[2K\033[0G"+ str + "\033[" + (str.length-insert) +"D" );
+        process.stdout.write("\u001b[2K\u001b[0G"+ str + "\u001b[" + (str.length-insert) +"D" );
       }
     }    
   }
