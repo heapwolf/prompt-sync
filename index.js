@@ -36,7 +36,8 @@ function prompt(option) {
       option.echo = '*';
   }
 
-  var fd = process.platform !== 'win32' && +process.version.substr(3) < 12 ? 
+  var nodeVersion = Number(/v(\d+\.\d+)/.exec(process.version)[1]);
+  var fd = process.platform !== 'win32' && nodeVersion < 0.12 ? 
     fs.openSync('/dev/tty', 'rs') : 
     process.stdin.fd;
     
