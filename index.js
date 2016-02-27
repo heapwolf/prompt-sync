@@ -38,8 +38,10 @@ function prompt(option) {
   var fd = (process.platform === 'win32') ? 
     process.stdin.fd :
     fs.openSync('/dev/tty', 'rs')
-    
-  process.stdin.setRawMode(true);
+
+  var wasRaw = process.stdin.isRaw;
+  if (!wasRaw) { process.stdin.setRawMode(true); }
+
   var buf = new Buffer(3);
   var str = '', char, read;
   
@@ -109,9 +111,12 @@ function prompt(option) {
     if (char == 3){ 
       process.stdout.write('^C\n');
       fs.closeSync(fd);
+      
       if (option.sigint)
         process.exit(130);
-      process.stdin.setRawMode(false);
+
+      process.stdin.setRawMode(wasRaw);
+
       return null;
     }
 
@@ -178,7 +183,7 @@ function prompt(option) {
   
   process.stdout.write('\n')
 
-  process.stdin.setRawMode(false);
+  process.stdin.setRawMode(wasRaw);
   
   return str;
 };
