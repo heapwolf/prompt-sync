@@ -35,10 +35,9 @@ function prompt(option) {
       option.echo = '*';
   }
 
-  var nodeVersion = Number(/v(\d+\.\d+)/.exec(process.version)[1]);
-  var fd = process.platform !== 'win32' && nodeVersion < 0.12 ? 
-    fs.openSync('/dev/tty', 'rs') : 
-    process.stdin.fd;
+  var fd = (process.platform === 'win32') ? 
+    process.stdin.fd :
+    fs.openSync('/dev/tty', 'rs')
     
   process.stdin.setRawMode(true);
   var buf = new Buffer(3);
