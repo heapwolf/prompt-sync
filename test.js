@@ -11,8 +11,7 @@
     };
   
     prompt.init();
-    console.log('enter name');
-    var name = prompt.prompt({tabComplete: tabComplete});
+    var name = prompt.prompt({tabComplete: tabComplete, ask: 'enter name: '});
     console.log('enter echo * password');
     var pw = prompt.prompt({hidden:true});
     console.log('enter no echo password');

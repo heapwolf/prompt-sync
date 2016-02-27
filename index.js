@@ -13,6 +13,7 @@ var HIST = [];
  *   tabComplete: {StringArray} function({String}) 
  *   value: {String} initial value for the prompt
  *   sigint: {Boolean} exit on ^C
+ *   ask: {String} opening question/statement to prompt for
  * }
  * @returns {string} Returns the string input or (if sigint === false) 
  *                   null if user terminates with a ^C 
@@ -45,8 +46,13 @@ function prompt(option) {
   
   savedstr = '';
 
+  if (option.ask) {
+    insert = option.ask.length;
+    process.stdout.write(option.ask);
+  }
+
   if (option.value) {
-    insert = option.value.length;
+    insert += option.value.length;
     str = option.value;
     process.stdout.write(option.value);
   }
@@ -160,7 +166,13 @@ function prompt(option) {
       if (insert == str.length) {
         process.stdout.write("\u001b[2K\u001b[0G"+ str);
       } else {
-        process.stdout.write("\u001b[2K\u001b[0G"+ str + "\u001b[" + (str.length-insert) +"D" );
+
+        if (option.ask) {
+          process.stdout.write("\u001b[2K\u001b[0G"+ option.ask + str);
+        } else {
+          process.stdout.write("\u001b[2K\u001b[0G"+ str + "\u001b[" + (str.length-insert) +"D" );
+        }
+        
       }
     }    
   }
