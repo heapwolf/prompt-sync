@@ -1,14 +1,14 @@
 {
   "name": "prompt-sync",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "description": "a synchronous prompt for node.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hij1nx/prompt-sync.git"
+    "url": "https://github.com/0x00A/prompt-sync.git"
   },
   "keywords": [
     "prompt",
@@ -20,7 +20,18 @@
     "repl",
     "history"
   ],
-  "author": "hij1nx",
-  "license": "MIT"
+  "contributors": [
+    {
+      "name": "Paolo Fragomeni",
+      "email": "paolo@async.ly"
+    },
+    {
+      "name": "David Mark Clements",
+      "email": "david.clements@nearform.com"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "prompt-sync-history": "^1.0.1"
+  }
 }
-
