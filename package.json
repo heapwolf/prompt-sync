@@ -1,6 +1,6 @@
 {
   "name": "prompt-sync",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "a synchronous prompt for node.js",
   "main": "index.js",
   "scripts": {
