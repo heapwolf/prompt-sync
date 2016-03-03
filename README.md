@@ -1,48 +1,74 @@
 # SYNOPSIS
 A sync prompt for node. very simple. no C++ bindings and no bash scripts.
 
+Works on Linux, OS X and Windows.
 
 # BASIC MODE
 ```js
 
-var prompt = require('prompt-sync').prompt;
-//
-// write some text to the screen.
-//
-process.stdout.write('How many more times? ')
-
+var prompt = require('prompt-sync')();
 //
 // get input from the user.
 //
-var n = prompt()
+var n = prompt('How many more times? ');
 ```
 # WITH HISTORY
-`prompt = require('prompt-sync')` returns an object with three methods:
 
-`prompt.init(history-filename, max-history) // open history file.`
+History is an optional extra, to use simply install the history plugin. 
 
-`prompt.save() // save history back to file`
+```sh
+npm install --save prompt-sync-history
+```
 
-`prompt.prompt(option) // do sync io from stdin`
+```js
+var prompt = require('prompt-sync')({
+  history: require('prompt-sync-history')() //open history file
+});
+//get some user input
+var input = prompt()
+prompt.history.save() //save history back to file
+```
 
+See the [prompt-sync-history](http://npm.im/prompt-sync-history) module
+for options, or fork it for customized behaviour. 
 
+# API
 
-# ADVANCED FUNCTIONS
-`prompt.prompt()` takes an optional argument object with the following properties
+## `require('prompt-sync')(config) => prompt` 
 
-`hidden`: Default is `false`. This prevents echo-back during text entry
-
-`echo`: Default is `'*'`. Echo character to be used. For no echo set this to `''`
-
-`tabComplete`: A completer function that will be called when user enters TAB to allow for autocomplete. It takes
-a string as an argument an returns an array of strings that are possible matches for completion. An empty array 
-is returned if there are no matches.
-
-`value`: The initial value for the prompt.
+Returns an instance of the `prompt` function.
+Takes `config` option with the following possible properties
 
 `sigint`: Default is `false`. A ^C may be pressed during the input process to abort the text entry. If sigint it `false`, prompt returns `null`. If sigint is `true` the ^C will be handled in the traditional way: as a SIGINT signal causing process to exit with code 130.
 
-`ask`: The question being asked of the user, will be output to terminal
+`autocomplete`: A completer function that will be called when user enters TAB to allow for autocomplete. It takes a string as an argument an returns an array of strings that are possible matches for completion. An empty array is returned if there are no matches.
+
+`history`: Takes an object that supplies a "history interface", see [prompt-sync-history](http://npm.im/prompt-sync-history) for an example.
+
+## `prompt(ask, value, opts)`
+
+`ask` is the label of the prompt, `value` is the default value
+in absence of a response. 
+
+The `opts` argument can also be in the first or second parameter position.
+
+Opts can have the following properties
+
+`echo`: Default is `'*'`. If set the password will be masked with the specified character. For hidden input, set echo to `''` (or use `prompt.hide`).
+
+`autocomplete`: Overrides the instance `autocomplete` function to allow for custom 
+autocompletion of a particular prompt.
+
+`value`: Same as the `value` parameter, the default value for the prompt. If `opts`
+is in the third position, this property will *not* overwrite the `value` parameter.
+
+`ask`: Sames as the `value` parameter. The prompt label. If `opts` is not in the first position, the `ask` parameter will *not* be overridden by this property.
+
+## `prompt.hide(ask)`
+
+Convenience method for creating a standard hidden password prompt, 
+this is the same as `prompt(ask, {echo: ''})`
+
 
 # LINE EDITING
 Line editing is enabled in the non-hidden mode. (use up/down arrows for history and backspace and left/right arrows for editing)
@@ -52,9 +78,32 @@ History is not set when using hidden mode.
 # EXAMPLES
 
 ```js
-    var prompt = require('./index') 
-    var commands = ['hello1234', 'he', 'hello', 'hello12', 'hello123456'];
-    function tabComplete(str) {
+  //basic:
+  console.log(require('./')()('tell me something about yourself: '))
+
+  var prompt = require('./')({
+    history: require('./history')(),
+    autocomplete: complete(['hello1234', 'he', 'hello', 'hello12', 'hello123456']),
+    sigint: false
+  });
+
+  var value = 'frank';
+  var name = prompt('enter name: ', value);
+  console.log('enter echo * password');
+  var pw = prompt({echo: '*'});
+  var pwb = prompt('enter hidden password (or don\'t): ', {echo: '', value: '*pwb default*'})
+  var pwc = prompt.hide('enter another hidden password: ')
+  var autocompleteTest = prompt('custom autocomplete: ', {
+    autocomplete: complete(['bye1234', 'by', 'bye12', 'bye123456'])
+  });
+
+  prompt.history.save();
+
+  console.log('\nName: %s\nPassword *: %s\nHidden password: %s\nAnother Hidden password: %s', name, pw, pwb, pwc);
+  console.log('autocomplete2: ', autocompleteTest);
+
+  function complete(commands) {
+    return function (str) {
       var i;
       var ret = [];
       for (i=0; i< commands.length; i++) {
@@ -63,14 +112,5 @@ History is not set when using hidden mode.
       }
       return ret;
     };
-  
-    prompt.init();
-    console.log('enter name');
-    var name = prompt.prompt({tabComplete: tabComplete});
-    console.log('enter echo * password');
-    var pw = prompt.prompt({hidden:true});
-    console.log('enter no echo password');
-    var pwb = prompt.prompt({hidden:true, echo: ''});  
-    console.log('Name: %s, Password *: %s, Password no echo: ', name, pw, pwb);
-    prompt.save();
+  };
 ```
