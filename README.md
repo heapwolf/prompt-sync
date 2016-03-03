@@ -79,9 +79,9 @@ History is not set when using hidden mode.
 
 ```js
   //basic:
-  console.log(require('./')()('tell me something about yourself: '))
+  console.log(require('prompt')()('tell me something about yourself: '))
 
-  var prompt = require('./')({
+  var prompt = require('prompt')({
     history: require('prompt-sync-history')(),
     autocomplete: complete(['hello1234', 'he', 'hello', 'hello12', 'hello123456']),
     sigint: false
