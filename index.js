@@ -173,7 +173,7 @@ function create(config) {
         }
       }
       
-      if (char == 127) { //backspace
+      if (char == 127 || (process.platform == 'win32' && char == 8)) { //backspace
         if (!insert) continue;
         str = str.slice(0, insert-1) + str.slice(insert);
         insert--;
