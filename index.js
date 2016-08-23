@@ -66,8 +66,8 @@ function create(config) {
     if (!wasRaw) { process.stdin.setRawMode(true); }
 
     var buf = new Buffer(3);
-    var str = '', char, read;
-    
+    var str = '', character, read;
+
     savedstr = '';
 
     if (ask) {
@@ -79,13 +79,13 @@ function create(config) {
 
     while (true) {
       read = fs.readSync(fd, buf, 0, 3);
-      if (read == 3) { // received a control sequence
+      if (read > 1) { // received a control sequence
         switch(buf.toString()) {
           case '\u001b[A':  //up arrow
             if (masked) break;
             if (!history) break;
             if (history.atStart()) break;
-            
+
             if (history.atEnd()) {
               savedstr = str;
               savedinsert = insert;
@@ -121,18 +121,27 @@ function create(config) {
             insert = (++insert > str.length) ? str.length : insert;
             process.stdout.write('\u001b[' + (insert+ask.length+1) + 'G');
             break;
+          default:
+            if (buf.toString()) {
+              str = str + buf.toString();
+              str = str.replace(/\0/g, '');
+              insert = str.length;
+              process.stdout.write('\u001b[2K\u001b[0G'+ ask + str);
+              process.stdout.write('\u001b[' + (insert+ask.length+1) + 'G');
+              buf = new Buffer(3);
+            }
         }
         continue; // any other 3 character sequence is ignored
       }
-      
+
       // if it is not a control character seq, assume only one character is read
-      char = buf[read-1];
-      
+      character = buf[read-1];
+
       // catch a ^C and return null
-      if (char == 3){ 
+      if (character == 3){
         process.stdout.write('^C\n');
         fs.closeSync(fd);
-        
+
         if (sigint) process.exit(130);
 
         process.stdin.setRawMode(wasRaw);
@@ -141,16 +150,16 @@ function create(config) {
       }
 
       // catch the terminating character
-      if (char == term) {
+      if (character == term) {
         fs.closeSync(fd);
         if (!history) break;
         if (!masked && str.length) history.push(str);
         history.reset();
         break;
       }
-      
+
       // catch a TAB and implement autocomplete
-      if (char == 9) { // TAB
+      if (character == 9) { // TAB
         res = autocomplete(str);
 
         if (str == res[0]) {
@@ -172,20 +181,19 @@ function create(config) {
           insert = item.length;
         }
       }
-      
-      if (char == 127 || (process.platform == 'win32' && char == 8)) { //backspace
+
+      if (character == 127 || (process.platform == 'win32' && character == 8)) { //backspace
         if (!insert) continue;
         str = str.slice(0, insert-1) + str.slice(insert);
         insert--;
         process.stdout.write('\u001b[2D');
       } else {
-        if ((char < 32 ) || (char > 126))
+        if ((character < 32 ) || (character > 126))
             continue;
-        str = str.slice(0, insert) + String.fromCharCode(char) + str.slice(insert);
+        str = str.slice(0, insert) + String.fromCharCode(character) + str.slice(insert);
         insert++;
       };
-      
-      
+
       if (masked) {
           process.stdout.write('\u001b[2K\u001b[0G' + ask + Array(str.length+1).join(echo));
       } else {
