@@ -126,7 +126,7 @@ function create(config) {
               str = str + buf.toString();
               str = str.replace(/\0/g, '');
               insert = str.length;
-              process.stdout.write('\u001b[2K\u001b[0G'+ ask + str);
+              promptPrint(masked, ask, echo, str, insert);
               process.stdout.write('\u001b[' + (insert+ask.length+1) + 'G');
               buf = new Buffer(3);
             }
@@ -194,31 +194,36 @@ function create(config) {
         insert++;
       };
 
-      if (masked) {
-          process.stdout.write('\u001b[2K\u001b[0G' + ask + Array(str.length+1).join(echo));
-      } else {
-        process.stdout.write('\u001b[s');
-        if (insert == str.length) {
-            process.stdout.write('\u001b[2K\u001b[0G'+ ask + str);
-        } else {
-          if (ask) {
-            process.stdout.write('\u001b[2K\u001b[0G'+ ask + str);
-          } else {
-            process.stdout.write('\u001b[2K\u001b[0G'+ str + '\u001b[' + (str.length - insert) + 'D');
-          }
-        }
-        process.stdout.write('\u001b[u');
-        process.stdout.write('\u001b[1C');
-      }
+      promptPrint(masked, ask, echo, str, insert);
 
     }
-    
+
     process.stdout.write('\n')
 
     process.stdin.setRawMode(wasRaw);
-    
+
     return str || value || '';
   };
+
+
+  function promptPrint(masked, ask, echo, str, insert) {
+    if (masked) {
+        process.stdout.write('\u001b[2K\u001b[0G' + ask + Array(str.length+1).join(echo));
+    } else {
+      process.stdout.write('\u001b[s');
+      if (insert == str.length) {
+          process.stdout.write('\u001b[2K\u001b[0G'+ ask + str);
+      } else {
+        if (ask) {
+          process.stdout.write('\u001b[2K\u001b[0G'+ ask + str);
+        } else {
+          process.stdout.write('\u001b[2K\u001b[0G'+ str + '\u001b[' + (str.length - insert) + 'D');
+        }
+      }
+      process.stdout.write('\u001b[u');
+      process.stdout.write('\u001b[1C');
+    }
+  }
 };
 
 module.exports = create;
