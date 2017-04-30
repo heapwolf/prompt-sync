@@ -226,4 +226,4 @@ function create(config) {
   }
 };
 
-module.exports = create;
+module.exports = create();
