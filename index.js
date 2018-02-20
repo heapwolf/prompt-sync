@@ -13,6 +13,8 @@ var term = 13; // carriage return
  * @returns {Function} prompt function 
  */
 
+ // for ANSI escape codes reference see https://en.wikipedia.org/wiki/ANSI_escape_code
+
 function create(config) {
 
   config = config || {};
@@ -220,8 +222,9 @@ function create(config) {
           process.stdout.write('\u001b[2K\u001b[0G'+ str + '\u001b[' + (str.length - insert) + 'D');
         }
       }
-      process.stdout.write('\u001b[u');
-      process.stdout.write('\u001b[1C');
+      
+      // Reposition the cursor to the right of the insertion point
+      process.stdout.write(`\u001b[${ask.length+1+(echo==''? 0:insert)}G`);
     }
   }
 };
