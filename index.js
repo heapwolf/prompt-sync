@@ -17,7 +17,7 @@ var term = 13; // carriage return
 
 function create(config) {
 
-  config = config || {};
+  config = config || {sigint: true};
   var sigint = config.sigint;
   var autocomplete = config.autocomplete = 
     config.autocomplete || function(){return []};
