@@ -1,6 +1,7 @@
 'use strict'
 
 var fs = require('fs');
+var stripAnsi = require('strip-ansi');
 var term = 13; // carriage return
 
 /**
@@ -224,7 +225,8 @@ function create(config) {
       }
 
       // Reposition the cursor to the right of the insertion point
-      process.stdout.write(`\u001b[${ask.length+1+(echo==''? 0:insert)}G`);
+      var askLength = stripAnsi(ask).length;
+      process.stdout.write(`\u001b[${askLength+1+(echo==''? 0:insert)}G`);
     }
   }
 };
