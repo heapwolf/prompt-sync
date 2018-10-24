@@ -10,7 +10,7 @@ var term = 13; // carriage return
  *   autocomplete: {StringArray} function({String})
  *   history: {String} a history control object (see `prompt-sync-history`)
  * }
- * @returns {Function} prompt function 
+ * @returns {Function} prompt function
  */
 
  // for ANSI escape codes reference see https://en.wikipedia.org/wiki/ANSI_escape_code
@@ -19,7 +19,7 @@ function create(config) {
 
   config = config || {};
   var sigint = config.sigint;
-  var autocomplete = config.autocomplete = 
+  var autocomplete = config.autocomplete =
     config.autocomplete || function(){return []};
   var history = config.history;
   prompt.history = history || {save: function(){}};
@@ -38,9 +38,9 @@ function create(config) {
    *   ask: {String} opening question/statement to prompt for, does not override ask param
    *   autocomplete: {StringArray} function({String})
    * }
-   * 
-   * @returns {string} Returns the string input or (if sigint === false) 
-   *                   null if user terminates with a ^C  
+   *
+   * @returns {string} Returns the string input or (if sigint === false)
+   *                   null if user terminates with a ^C
    */
 
 
@@ -60,7 +60,7 @@ function create(config) {
     var masked = 'echo' in opts;
     autocomplete = opts.autocomplete || autocomplete;
 
-    var fd = (process.platform === 'win32') ? 
+    var fd = (process.platform === 'win32') ?
       process.stdin.fd :
       fs.openSync('/dev/tty', 'rs');
 
@@ -100,7 +100,7 @@ function create(config) {
             if (masked) break;
             if (!history) break;
             if (history.pastEnd()) break;
-            
+
             if (history.atPenultimate()) {
               str = savedstr;
               insert = savedinsert;
@@ -222,7 +222,7 @@ function create(config) {
           process.stdout.write('\u001b[2K\u001b[0G'+ str + '\u001b[' + (str.length - insert) + 'D');
         }
       }
-      
+
       // Reposition the cursor to the right of the insertion point
       process.stdout.write(`\u001b[${ask.length+1+(echo==''? 0:insert)}G`);
     }
