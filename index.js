@@ -65,7 +65,7 @@ function create(config) {
       fs.openSync('/dev/tty', 'rs');
 
     var wasRaw = process.stdin.isRaw;
-    if (!wasRaw) { process.stdin.setRawMode(true); }
+    if (!wasRaw) { process.stdin.setRawMode && process.stdin.setRawMode(true); }
 
     var buf = new Buffer(3);
     var str = '', character, read;
@@ -146,7 +146,7 @@ function create(config) {
 
         if (sigint) process.exit(130);
 
-        process.stdin.setRawMode(wasRaw);
+        process.stdin.setRawMode && process.stdin.setRawMode(wasRaw);
 
         return null;
       }
@@ -202,7 +202,7 @@ function create(config) {
 
     process.stdout.write('\n')
 
-    process.stdin.setRawMode(wasRaw);
+    process.stdin.setRawMode && process.stdin.setRawMode(wasRaw);
 
     return str || value || '';
   };
