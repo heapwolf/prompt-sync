@@ -1,6 +1,9 @@
 //basic:
 console.log(require('./')()('tell me something about yourself: '))
 
+// ANSI escape codes colored text test
+require('./')()('\u001B[31mcolored text: \u001B[39m');
+
 var prompt = require('./')({
   history: require('prompt-sync-history')(),
   autocomplete: complete(['hello1234', 'he', 'hello', 'hello12', 'hello123456']),

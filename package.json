@@ -33,5 +33,8 @@
   "license": "MIT",
   "devDependencies": {
     "prompt-sync-history": "^1.0.1"
+  },
+  "dependencies": {
+    "strip-ansi": "^5.0.0"
   }
 }
