@@ -68,7 +68,7 @@ function create(config) {
     var wasRaw = process.stdin.isRaw;
     if (!wasRaw) { process.stdin.setRawMode && process.stdin.setRawMode(true); }
 
-    var buf = new Buffer(3);
+    var buf = Buffer.alloc(3);
     var str = '', character, read;
 
     savedstr = '';
@@ -131,7 +131,7 @@ function create(config) {
               insert = str.length;
               promptPrint(masked, ask, echo, str, insert);
               process.stdout.write('\u001b[' + (insert+ask.length+1) + 'G');
-              buf = new Buffer(3);
+              buf = Buffer.alloc(3);
             }
         }
         continue; // any other 3 character sequence is ignored
