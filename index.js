@@ -20,6 +20,7 @@ function create(config) {
 
   config = config || {};
   var sigint = config.sigint;
+  var eot = config.eot;
   var autocomplete = config.autocomplete =
     config.autocomplete || function(){return []};
   var history = config.history;
@@ -150,6 +151,14 @@ function create(config) {
         process.stdin.setRawMode && process.stdin.setRawMode(wasRaw);
 
         return null;
+      }
+
+      // catch a ^D and exit
+      if (character == 4) {
+        if (str.length == 0 && eot) {
+          process.stdout.write('exit\n');
+          process.exit(0);
+        }
       }
 
       // catch the terminating character
