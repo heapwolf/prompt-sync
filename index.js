@@ -20,6 +20,7 @@ function create(config) {
 
   config = config || {};
   var sigint = config.sigint;
+  var eot = config.eot;
   var autocomplete = config.autocomplete =
     config.autocomplete || function(){return []};
   var history = config.history;
@@ -68,7 +69,7 @@ function create(config) {
     var wasRaw = process.stdin.isRaw;
     if (!wasRaw) { process.stdin.setRawMode && process.stdin.setRawMode(true); }
 
-    var buf = new Buffer(3);
+    var buf = Buffer.alloc(3);
     var str = '', character, read;
 
     savedstr = '';
@@ -131,7 +132,7 @@ function create(config) {
               insert = str.length;
               promptPrint(masked, ask, echo, str, insert);
               process.stdout.write('\u001b[' + (insert+ask.length+1) + 'G');
-              buf = new Buffer(3);
+              buf = Buffer.alloc(3);
             }
         }
         continue; // any other 3 character sequence is ignored
@@ -150,6 +151,14 @@ function create(config) {
         process.stdin.setRawMode && process.stdin.setRawMode(wasRaw);
 
         return null;
+      }
+
+      // catch a ^D and exit
+      if (character == 4) {
+        if (str.length == 0 && eot) {
+          process.stdout.write('exit\n');
+          process.exit(0);
+        }
       }
 
       // catch the terminating character
