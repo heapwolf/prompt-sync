@@ -76,6 +76,7 @@ function create(config) {
 
     if (ask) {
       process.stdout.write(ask);
+      ask = ask.split(/\r?\n/).pop();
     }
 
     var cycle = 0;
