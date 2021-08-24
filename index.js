@@ -21,8 +21,7 @@ function create(config) {
   config = config || {};
   var sigint = config.sigint;
   var eot = config.eot;
-  var autocomplete = config.autocomplete =
-    config.autocomplete || function(){return []};
+  var autocomplete = config.autocomplete || function(){return []};
   var history = config.history;
   prompt.history = history || {save: function(){}};
   prompt.hide = function (ask) { return prompt(ask, {echo: ''}) };
