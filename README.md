@@ -71,6 +71,10 @@ is in the third position, this property will *not* overwrite the `value` paramet
 Convenience method for creating a standard hidden password prompt, 
 this is the same as `prompt(ask, {echo: ''})`
 
+## `prompt.str`
+
+The value of the current string being edited, really only useful for grabbing the input that was ^C'd out of, if `sigint` is `true`.
+
 
 # LINE EDITING
 Line editing is enabled in the non-hidden mode. (use up/down arrows for history and backspace and left/right arrows for editing)
