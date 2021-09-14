@@ -70,7 +70,8 @@ function create(config) {
     if (!wasRaw) { process.stdin.setRawMode && process.stdin.setRawMode(true); }
 
     var buf = Buffer.alloc(3);
-    var str = '', character, read;
+    var character, read;
+    prompt.str = '';
 
     savedstr = '';
 
@@ -91,12 +92,12 @@ function create(config) {
             if (history.atStart()) break;
 
             if (history.atEnd()) {
-              savedstr = str;
+              savedstr = prompt.str;
               savedinsert = insert;
             }
-            str = history.prev();
-            insert = str.length;
-            process.stdout.write('\u001b[2K\u001b[0G' + ask + str);
+            prompt.str = history.prev();
+            insert = prompt.str.length;
+            process.stdout.write('\u001b[2K\u001b[0G' + ask + prompt.str);
             break;
           case '\u001b[B':  //down arrow
             if (masked) break;
@@ -104,14 +105,14 @@ function create(config) {
             if (history.pastEnd()) break;
 
             if (history.atPenultimate()) {
-              str = savedstr;
+              prompt.str = savedstr;
               insert = savedinsert;
               history.next();
             } else {
-              str = history.next();
-              insert = str.length;
+              prompt.str = history.next();
+              insert = prompt.str.length;
             }
-            process.stdout.write('\u001b[2K\u001b[0G'+ ask + str + '\u001b['+(insert+ask.length+1)+'G');
+            process.stdout.write('\u001b[2K\u001b[0G'+ ask + prompt.str + '\u001b['+(insert+ask.length+1)+'G');
             break;
           case '\u001b[D': //left arrow
             if (masked) break;
@@ -122,15 +123,15 @@ function create(config) {
             break;
           case '\u001b[C': //right arrow
             if (masked) break;
-            insert = (++insert > str.length) ? str.length : insert;
+            insert = (++insert > prompt.str.length) ? prompt.str.length : insert;
             process.stdout.write('\u001b[' + (insert+ask.length+1) + 'G');
             break;
           default:
             if (buf.toString()) {
-              str = str + buf.toString();
-              str = str.replace(/\0/g, '');
-              insert = str.length;
-              promptPrint(masked, ask, echo, str, insert);
+              prompt.str = prompt.str + buf.toString();
+              prompt.str = prompt.str.replace(/\0/g, '');
+              insert = prompt.str.length;
+              promptPrint(masked, ask, echo, prompt.str, insert);
               process.stdout.write('\u001b[' + (insert+ask.length+1) + 'G');
               buf = Buffer.alloc(3);
             }
@@ -155,7 +156,7 @@ function create(config) {
 
       // catch a ^D and exit
       if (character == 4) {
-        if (str.length == 0 && eot) {
+        if (prompt.str.length == 0 && eot) {
           process.stdout.write('exit\n');
           process.exit(0);
         }
@@ -165,16 +166,16 @@ function create(config) {
       if (character == term) {
         fs.closeSync(fd);
         if (!history) break;
-        if (!masked && str.length) history.push(str);
+        if (!masked && prompt.str.length) history.push(prompt.str);
         history.reset();
         break;
       }
 
       // catch a TAB and implement autocomplete
       if (character == 9) { // TAB
-        res = autocomplete(str);
+        res = autocomplete(prompt.str);
 
-        if (str == res[0]) {
+        if (prompt.str == res[0]) {
           res = autocomplete('');
         } else {
           prevComplete = res.length;
@@ -189,24 +190,24 @@ function create(config) {
 
         if (item) {
           process.stdout.write('\r\u001b[K' + ask + item);
-          str = item;
+          prompt.str = item;
           insert = item.length;
         }
       }
 
       if (character == 127 || (process.platform == 'win32' && character == 8)) { //backspace
         if (!insert) continue;
-        str = str.slice(0, insert-1) + str.slice(insert);
+        prompt.str = prompt.str.slice(0, insert-1) + prompt.str.slice(insert);
         insert--;
         process.stdout.write('\u001b[2D');
       } else {
         if ((character < 32 ) || (character > 126))
             continue;
-        str = str.slice(0, insert) + String.fromCharCode(character) + str.slice(insert);
+        prompt.str = prompt.str.slice(0, insert) + String.fromCharCode(character) + prompt.str.slice(insert);
         insert++;
       };
 
-      promptPrint(masked, ask, echo, str, insert);
+      promptPrint(masked, ask, echo, prompt.str, insert);
 
     }
 
@@ -214,7 +215,7 @@ function create(config) {
 
     process.stdin.setRawMode && process.stdin.setRawMode(wasRaw);
 
-    return str || value || '';
+    return prompt.str || value || '';
   };
 
 
