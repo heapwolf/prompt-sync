@@ -35,6 +35,6 @@
     "prompt-sync-history": "^1.0.1"
   },
   "dependencies": {
-    "strip-ansi": "^5.0.0"
+    "strip-ansi": "^6.0.1"
   }
 }
