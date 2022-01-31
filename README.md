@@ -12,21 +12,21 @@ var prompt = require('prompt-sync')();
 //
 var n = prompt('How many more times? ');
 ```
-# WITH HISTORY
+# ADVANCED HISTORY
 
-History is an optional extra, to use simply install the history plugin. 
+History is configurable, for example using this extra package: 
 
 ```sh
-npm install --save prompt-sync-history
+npm install prompt-sync-history
 ```
 
 ```js
 var prompt = require('prompt-sync')({
-  history: require('prompt-sync-history')() //open history file
+  history: require('prompt-sync-history')() // open history file
 });
 //get some user input
 var input = prompt()
-prompt.history.save() //save history back to file
+prompt.history.save() // save history back to file
 ```
 
 See the [prompt-sync-history](http://npm.im/prompt-sync-history) module
@@ -80,10 +80,13 @@ History is not set when using hidden mode.
 # EXAMPLES
 
 ```js
-  //basic:
-  console.log(require('prompt-sync')()('tell me something about yourself: '))
+  // basic:
+  console.log(require('./')()('tell me something about yourself: '))
 
-  var prompt = require('prompt-sync')({
+  // ANSI escape codes colored text test
+  require('./')()('\u001B[31mcolored text: \u001B[39m');
+
+  var prompt = require('./')({
     history: require('prompt-sync-history')(),
     autocomplete: complete(['hello1234', 'he', 'hello', 'hello12', 'hello123456']),
     sigint: false
@@ -114,5 +117,5 @@ History is not set when using hidden mode.
       }
       return ret;
     };
-  };
-```
+  }
+````

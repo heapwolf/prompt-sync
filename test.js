@@ -1,4 +1,4 @@
-//basic:
+// basic:
 console.log(require('./')()('tell me something about yourself: '))
 
 // ANSI escape codes colored text test
@@ -35,4 +35,4 @@ function complete(commands) {
     }
     return ret;
   };
-};
+}
