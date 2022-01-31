@@ -1,4 +1,4 @@
-//basic:
+// basic:
 console.log(require('./')()('tell me something about yourself: '))
 
 // ANSI escape codes colored text test
@@ -36,3 +36,23 @@ function complete(commands) {
     return ret;
   };
 };
+
+// as object
+var Ajv = require('ajv');
+var ajv = new Ajv({ coerceTypes: true, useDefaults: true });
+var promptObj = require('./')({
+  validate: (schema, data) => {
+    var isValid = ajv.validate(schema, data);
+    return isValid ? null : ajv.errors.map(({message, params}) => `> ${message} ${JSON.stringify(params)}`).join('\n'); 
+  }
+});
+
+var obj = promptObj({
+  name: {type: 'string', minLength: 2, required: true},
+  pw: {type: 'string', secret: true},
+  size: {type: 'string', enum: ['xs', 'sm', 'lg'], default: 'sm'},
+  age: {type: 'integer', description: 'How old ru?', minimum: 0, maximum: 150},
+  height: {type: 'number', description: 'Height in meters?', minimum: 0, maximum: 2.8, default: 1.8},
+});
+
+console.log('obj:', obj);

@@ -4,6 +4,25 @@ var fs = require('fs');
 var stripAnsi = require('strip-ansi');
 var term = 13; // carriage return
 
+function createMemoryHistory() {
+  var HIST = [];
+  var ix = HIST.length;
+  return {
+    atStart() { return ix <= 0; },
+    atPenultimate() { return ix === HIST.length - 1; },
+    pastEnd() { return ix >= HIST.length; },
+    atEnd() { return ix === HIST.length; },
+    prev() { return HIST[--ix]; },
+    next() { return HIST[++ix]; },
+    reset() { ix = HIST.length; },
+    push(str) { 
+      if (HIST.includes(str)) return;
+      HIST.push(str);
+    },
+    save() { },
+  };
+}
+
 /**
  * create -- sync function for reading user input from stdin
  * @param   {Object} config {
@@ -16,16 +35,36 @@ var term = 13; // carriage return
 
  // for ANSI escape codes reference see https://en.wikipedia.org/wiki/ANSI_escape_code
 
-function create(config) {
-
-  config = config || {};
+function create(config = {}) {
   var sigint = config.sigint;
   var eot = config.eot;
   var autocomplete = config.autocomplete =
     config.autocomplete || function(){return []};
-  var history = config.history;
-  prompt.history = history || {save: function(){}};
+  var history = prompt.history = config.history || createMemoryHistory();
   prompt.hide = function (ask) { return prompt(ask, {echo: ''}) };
+
+  if (config.validate) {
+    return function promptObject(schemaProps) {
+      var res = {};
+
+      for (var [key, {required, secret, ...props}] of Object.entries(schemaProps)) {
+        var opts = {
+          ask: `${props.description || key} ${props.default !== undefined ? `(${props.default}) ` : ''}`,
+          echo: secret ? '*' : undefined,
+        };
+
+        res[key] = prompt(opts) || undefined;
+
+        var err;
+        while (err = config.validate({ type: 'object', properties: { [key]: props }, required: required ? [key] : undefined }, res)) {
+          console.error(err);
+          res[key] = prompt(opts) || undefined;
+        }
+      }
+
+      return res;
+    }
+  }
 
   return prompt;
 
@@ -46,20 +85,19 @@ function create(config) {
    */
 
 
-  function prompt(ask, value, opts) {
+  function prompt(ask = '', value, opts = {}) {
     var insert = 0, savedinsert = 0, res, i, savedstr;
-    opts = opts || {};
 
     if (Object(ask) === ask) {
       opts = ask;
-      ask = opts.ask;
+      ask = opts.ask || '';
     } else if (Object(value) === value) {
       opts = value;
       value = opts.value;
-    }
-    ask = ask || '';
+     }
+
     var echo = opts.echo;
-    var masked = 'echo' in opts;
+    var masked = opts.echo !== undefined;
     autocomplete = opts.autocomplete || autocomplete;
 
     var fd = (process.platform === 'win32') ?
@@ -215,7 +253,7 @@ function create(config) {
     process.stdin.setRawMode && process.stdin.setRawMode(wasRaw);
 
     return str || value || '';
-  };
+  }
 
 
   function promptPrint(masked, ask, echo, str, insert) {

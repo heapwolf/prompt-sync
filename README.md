@@ -12,21 +12,21 @@ var prompt = require('prompt-sync')();
 //
 var n = prompt('How many more times? ');
 ```
-# WITH HISTORY
+# ADVANCED HISTORY
 
-History is an optional extra, to use simply install the history plugin. 
+History is configurable, for example using this extra package: 
 
 ```sh
-npm install --save prompt-sync-history
+npm install prompt-sync-history
 ```
 
 ```js
 var prompt = require('prompt-sync')({
-  history: require('prompt-sync-history')() //open history file
+  history: require('prompt-sync-history')() // open history file
 });
 //get some user input
 var input = prompt()
-prompt.history.save() //save history back to file
+prompt.history.save() // save history back to file
 ```
 
 See the [prompt-sync-history](http://npm.im/prompt-sync-history) module
@@ -46,6 +46,8 @@ Takes `config` option with the following possible properties
 `autocomplete`: A completer function that will be called when user enters TAB to allow for autocomplete. It takes a string as an argument an returns an array of strings that are possible matches for completion. An empty array is returned if there are no matches.
 
 `history`: Takes an object that supplies a "history interface", see [prompt-sync-history](http://npm.im/prompt-sync-history) for an example.
+
+`validate`: A function returning null when validation passes or the error message else, see the prompt object example in test.js
 
 ## `prompt(ask, value, opts)`
 
@@ -79,40 +81,4 @@ History is not set when using hidden mode.
 
 # EXAMPLES
 
-```js
-  //basic:
-  console.log(require('prompt-sync')()('tell me something about yourself: '))
-
-  var prompt = require('prompt-sync')({
-    history: require('prompt-sync-history')(),
-    autocomplete: complete(['hello1234', 'he', 'hello', 'hello12', 'hello123456']),
-    sigint: false
-  });
-
-  var value = 'frank';
-  var name = prompt('enter name: ', value);
-  console.log('enter echo * password');
-  var pw = prompt({echo: '*'});
-  var pwb = prompt('enter hidden password (or don\'t): ', {echo: '', value: '*pwb default*'})
-  var pwc = prompt.hide('enter another hidden password: ')
-  var autocompleteTest = prompt('custom autocomplete: ', {
-    autocomplete: complete(['bye1234', 'by', 'bye12', 'bye123456'])
-  });
-
-  prompt.history.save();
-
-  console.log('\nName: %s\nPassword *: %s\nHidden password: %s\nAnother Hidden password: %s', name, pw, pwb, pwc);
-  console.log('autocomplete2: ', autocompleteTest);
-
-  function complete(commands) {
-    return function (str) {
-      var i;
-      var ret = [];
-      for (i=0; i< commands.length; i++) {
-        if (commands[i].indexOf(str) == 0)
-          ret.push(commands[i]);
-      }
-      return ret;
-    };
-  };
-```
+see test.js
