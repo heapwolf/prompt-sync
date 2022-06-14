@@ -12,6 +12,18 @@ var prompt = require('prompt-sync')();
 //
 var n = prompt('How many more times? ');
 ```
+
+If you prefer the import syntax, prompt-sync can be used like this:
+
+```js
+import create from 'prompt-sync';
+let prompt = create();
+//
+// get input from the user.
+//
+var n = prompt('How many more times? ');
+```
+
 # WITH HISTORY
 
 History is an optional extra, to use simply install the history plugin. 
