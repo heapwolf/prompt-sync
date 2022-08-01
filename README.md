@@ -14,7 +14,7 @@ var n = prompt('How many more times? ');
 ```
 # WITH HISTORY
 
-History is an optional extra, to use simply install the history plugin. 
+History is an optional extra, to use simply install the history plugin.
 
 ```sh
 npm install --save prompt-sync-history
@@ -30,11 +30,11 @@ prompt.history.save() //save history back to file
 ```
 
 See the [prompt-sync-history](http://npm.im/prompt-sync-history) module
-for options, or fork it for customized behaviour. 
+for options, or fork it for customized behaviour.
 
 # API
 
-## `require('prompt-sync')(config) => prompt` 
+## `require('prompt-sync')(config) => prompt`
 
 Returns an instance of the `prompt` function.
 Takes `config` option with the following possible properties
@@ -47,10 +47,12 @@ Takes `config` option with the following possible properties
 
 `history`: Takes an object that supplies a "history interface", see [prompt-sync-history](http://npm.im/prompt-sync-history) for an example.
 
+`submitOnCharacter`: Entering any single character results in submission (auto enter). Supports a use case like 'press **w** to see more options'.
+
 ## `prompt(ask, value, opts)`
 
 `ask` is the label of the prompt, `value` is the default value
-in absence of a response. 
+in absence of a response.
 
 The `opts` argument can also be in the first or second parameter position.
 
@@ -58,7 +60,7 @@ Opts can have the following properties
 
 `echo`: Default is `'*'`. If set the password will be masked with the specified character. For hidden input, set echo to `''` (or use `prompt.hide`).
 
-`autocomplete`: Overrides the instance `autocomplete` function to allow for custom 
+`autocomplete`: Overrides the instance `autocomplete` function to allow for custom
 autocompletion of a particular prompt.
 
 `value`: Same as the `value` parameter, the default value for the prompt. If `opts`
@@ -68,7 +70,7 @@ is in the third position, this property will *not* overwrite the `value` paramet
 
 ## `prompt.hide(ask)`
 
-Convenience method for creating a standard hidden password prompt, 
+Convenience method for creating a standard hidden password prompt,
 this is the same as `prompt(ask, {echo: ''})`
 
 

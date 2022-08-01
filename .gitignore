@@ -1,3 +1,4 @@
 npm-debug.log
 *sw.*
 node_modules
+.prompt_hist.txt

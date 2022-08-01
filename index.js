@@ -14,7 +14,7 @@ var term = 13; // carriage return
  * @returns {Function} prompt function
  */
 
- // for ANSI escape codes reference see https://en.wikipedia.org/wiki/ANSI_escape_code
+// for ANSI escape codes reference see https://en.wikipedia.org/wiki/ANSI_escape_code
 
 function create(config) {
 
@@ -24,6 +24,7 @@ function create(config) {
   var autocomplete = config.autocomplete =
     config.autocomplete || function(){return []};
   var history = config.history;
+  var submitOnCharacter = config.submitOnCharacter || false;
   prompt.history = history || {save: function(){}};
   prompt.hide = function (ask) { return prompt(ask, {echo: ''}) };
 
@@ -201,10 +202,19 @@ function create(config) {
         process.stdout.write('\u001b[2D');
       } else {
         if ((character < 32 ) || (character > 126))
-            continue;
+          continue;
         str = str.slice(0, insert) + String.fromCharCode(character) + str.slice(insert);
         insert++;
       };
+
+      // user wants to submit on single character entry
+      if (submitOnCharacter) {
+        fs.closeSync(fd);
+        if (!history) break;
+        if (!masked && str.length) history.push(str);
+        history.reset();
+        break;
+      }
 
       promptPrint(masked, ask, echo, str, insert);
 
