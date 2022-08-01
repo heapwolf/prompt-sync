@@ -22,7 +22,14 @@ var autocompleteTest = prompt('custom autocomplete: ', {
 
 prompt.history.save();
 
-console.log('\nName: %s\nPassword *: %s\nHidden password: %s\nAnother Hidden password: %s', name, pw, pwb, pwc);
+var prompt2 = require('./')({
+  sigint: false,
+  submitOnCharacter: true
+});
+
+var submitOnCharacter = prompt2('enter single character: ', { submitOnCharacter: true });
+
+console.log('\nName: %s\nPassword *: %s\nHidden password: %s\nAnother Hidden password: %s\nauto character:%s', name, pw, pwb, pwc, submitOnCharacter);
 console.log('autocomplete2: ', autocompleteTest);
 
 function complete(commands) {
