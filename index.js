@@ -79,7 +79,6 @@ function create(config) {
     }
 
     var cycle = 0;
-    var prevComplete;
 
     while (true) {
       read = fs.readSync(fd, buf, 0, 3);
@@ -176,9 +175,7 @@ function create(config) {
 
         if (str == res[0]) {
           res = autocomplete('');
-        } else {
-          prevComplete = res.length;
-        }
+        } 
 
         if (res.length == 0) {
           process.stdout.write('\t');
