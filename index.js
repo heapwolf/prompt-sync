@@ -195,6 +195,8 @@ function create(config) {
       } else {
         // user entered anything other than TAB; reset from last use of autocomplete 
         autoCompleteSearchTerm = undefined; 
+        // reset cycle - next time user hits tab might yield a different result list 
+        cycle = 0;
       }
 
       if (character == 127 || (process.platform == 'win32' && character == 8)) { //backspace
