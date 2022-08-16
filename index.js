@@ -4,6 +4,7 @@ var fs = require('fs');
 var stripAnsi = require('strip-ansi');
 var term = 13; // carriage return
 
+
 /**
  * create -- sync function for reading user input from stdin
  * @param   {Object} config {
@@ -71,6 +72,7 @@ function create(config) {
 
     var buf = Buffer.alloc(3);
     var str = '', character, read;
+    var autoCompleteSearchTerm;
 
     savedstr = '';
 
@@ -79,7 +81,6 @@ function create(config) {
     }
 
     var cycle = 0;
-    var prevComplete;
 
     while (true) {
       read = fs.readSync(fd, buf, 0, 3);
@@ -172,13 +173,11 @@ function create(config) {
 
       // catch a TAB and implement autocomplete
       if (character == 9) { // TAB
-        res = autocomplete(str);
+        // first TAB hit, save off original input 
+        if(autoCompleteSearchTerm === undefined)
+          autoCompleteSearchTerm = str;
 
-        if (str == res[0]) {
-          res = autocomplete('');
-        } else {
-          prevComplete = res.length;
-        }
+        res = autocomplete(autoCompleteSearchTerm);
 
         if (res.length == 0) {
           process.stdout.write('\t');
@@ -190,8 +189,14 @@ function create(config) {
         if (item) {
           process.stdout.write('\r\u001b[K' + ask + item);
           str = item;
+
           insert = item.length;
         }
+      } else {
+        // user entered anything other than TAB; reset from last use of autocomplete 
+        autoCompleteSearchTerm = undefined; 
+        // reset cycle - next time user hits tab might yield a different result list 
+        cycle = 0;
       }
 
       if (character == 127 || (process.platform == 'win32' && character == 8)) { //backspace
