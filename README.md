@@ -47,6 +47,8 @@ Takes `config` option with the following possible properties
 
 `history`: Takes an object that supplies a "history interface", see [prompt-sync-history](http://npm.im/prompt-sync-history) for an example.
 
+`encoding`: Default is `utf-8`. On Windows used for decoding of non-ASCII characters. For Cyrillic specify `windows-1251` for example.
+
 ## `prompt(ask, value, opts)`
 
 `ask` is the label of the prompt, `value` is the default value

@@ -21,6 +21,8 @@ function create(config) {
   config = config || {};
   var sigint = config.sigint;
   var eot = config.eot;
+  var encoding = config.encoding || 'utf-8';
+  const decoder = new TextDecoder(encoding);
   var autocomplete = config.autocomplete =
     config.autocomplete || function(){return []};
   var history = config.history;
@@ -140,7 +142,9 @@ function create(config) {
 
       // if it is not a control character seq, assume only one character is read
       character = buf[read-1];
-
+      const codePoint = process.platform == 'win32'
+        ? decoder.decode(buf.subarray(0, read))
+        : String.fromCharCode(character);
       // catch a ^C and return null
       if (character == 3){
         process.stdout.write('^C\n');
@@ -200,9 +204,9 @@ function create(config) {
         insert--;
         process.stdout.write('\u001b[2D');
       } else {
-        if ((character < 32 ) || (character > 126))
+        if (character < 32)
             continue;
-        str = str.slice(0, insert) + String.fromCharCode(character) + str.slice(insert);
+        str = str.slice(0, insert) + codePoint + str.slice(insert);
         insert++;
       };
 
