@@ -75,7 +75,16 @@ function create(config) {
     savedstr = '';
 
     if (ask) {
-      process.stdout.write(ask);
+      if (ask.includes('\n')) {
+        let parts = ask.split('\n')
+        console.log(parts)
+        parts.forEach(part => {
+          process.stdout.write(part)
+        });
+        ask = ask.replaceAll('\n', '')
+      } else {
+        process.stdout.write(ask);
+      }
     }
 
     var cycle = 0;
