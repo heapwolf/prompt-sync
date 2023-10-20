@@ -64,7 +64,7 @@ autocompletion of a particular prompt.
 `value`: Same as the `value` parameter, the default value for the prompt. If `opts`
 is in the third position, this property will *not* overwrite the `value` parameter.
 
-`ask`: Sames as the `value` parameter. The prompt label. If `opts` is not in the first position, the `ask` parameter will *not* be overridden by this property.
+`ask`: Sames as the `ask` parameter. The prompt label. If `opts` is not in the first position, the `ask` parameter will *not* be overridden by this property.
 
 ## `prompt.hide(ask)`
 
